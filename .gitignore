@@ -1,0 +1,9 @@
+# Exclude Word documents
+*.docx
+*.doc
+
+# macOS
+.DS_Store
+
+# Other
+*.tmp

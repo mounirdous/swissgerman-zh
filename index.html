@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiss German Verb Conjugation Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .verb-title {
+            text-align: center;
+            font-size: 2em;
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .column {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .column h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .item {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .item.selected {
+            border-color: #667eea;
+            background: #e7eaff;
+            font-weight: bold;
+        }
+
+        .item.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .item.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            animation: shake 0.5s ease;
+        }
+
+        .item.matched {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+            min-height: 30px;
+            font-weight: bold;
+        }
+
+        .message.success {
+            color: #28a745;
+        }
+
+        .message.error {
+            color: #dc3545;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇨🇭 Swiss German Verbs</h1>
+        <div class="subtitle">Match the pronouns with their conjugations</div>
+
+        <div id="loading" class="loading">Loading verbs...</div>
+
+        <div id="game" style="display: none;">
+            <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+            <div class="verb-title" id="verbTitle"></div>
+
+            <div class="game-container">
+                <div class="column">
+                    <h2>Pronouns</h2>
+                    <div id="pronouns"></div>
+                </div>
+
+                <div class="column">
+                    <h2>Conjugations</h2>
+                    <div id="conjugations"></div>
+                </div>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <div class="controls">
+                <button onclick="nextVerb()">Next Verb</button>
+                <button onclick="resetGame()">Reset Score</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verb data structure
+        let verbs = [];
+        let currentVerb = null;
+        let selectedPronoun = null;
+        let selectedConjugationId = null;
+        let matchedPronouns = new Set();
+        let matchedConjugationIds = new Set();
+        let score = 0;
+        let totalAttempts = 0;
+        let conjugationIdCounter = 0;
+
+        // Swiss German pronouns
+        const pronouns = ['ich', 'du', 'er/si/es', 'mir', 'ihr', 'Si'];
+
+        // Load verbs from JSON file
+        async function loadVerbs() {
+            try {
+                const response = await fetch('data/verbs.json');
+                verbs = await response.json();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game').style.display = 'block';
+                nextVerb();
+            } catch (error) {
+                document.getElementById('loading').innerHTML =
+                    'Error loading verbs. Please make sure data/verbs.json exists.';
+                console.error('Error loading verbs:', error);
+            }
+        }
+
+        // Shuffle array
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Select next random verb
+        function nextVerb() {
+            if (verbs.length === 0) return;
+
+            currentVerb = verbs[Math.floor(Math.random() * verbs.length)];
+            matchedPronouns.clear();
+            matchedConjugationIds.clear();
+            selectedPronoun = null;
+            selectedConjugationId = null;
+            conjugationIdCounter = 0;
+
+            document.getElementById('verbTitle').textContent = currentVerb.infinitive;
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').className = 'message';
+
+            renderPronouns();
+            renderConjugations();
+        }
+
+        // Render pronouns column
+        function renderPronouns() {
+            const container = document.getElementById('pronouns');
+            container.innerHTML = pronouns.map((pronoun, index) => `
+                <div class="item ${matchedPronouns.has(index) ? 'matched' : ''}"
+                     onclick="selectPronoun(${index})"
+                     id="pronoun-${index}">
+                    ${pronoun}
+                </div>
+            `).join('');
+        }
+
+        // Render conjugations column (shuffled)
+        function renderConjugations() {
+            const container = document.getElementById('conjugations');
+            const shuffled = shuffle(currentVerb.conjugations.map((conj, index) => {
+                const uniqueId = conjugationIdCounter++;
+                return {conj, index, uniqueId};
+            }));
+
+            container.innerHTML = shuffled.map(({conj, index, uniqueId}) => `
+                <div class="item ${matchedConjugationIds.has(uniqueId) ? 'matched' : ''}"
+                     onclick="selectConjugation(${uniqueId}, ${index})"
+                     id="conjugation-${uniqueId}"
+                     data-original-index="${index}"
+                     data-unique-id="${uniqueId}">
+                    ${conj}
+                </div>
+            `).join('');
+        }
+
+        // Handle pronoun selection
+        function selectPronoun(index) {
+            if (matchedPronouns.has(index)) return;
+
+            // Clear previous selection
+            if (selectedPronoun !== null) {
+                document.getElementById(`pronoun-${selectedPronoun}`).classList.remove('selected');
+            }
+
+            selectedPronoun = index;
+            document.getElementById(`pronoun-${index}`).classList.add('selected');
+
+            checkMatch();
+        }
+
+        // Handle conjugation selection
+        function selectConjugation(uniqueId, originalIndex) {
+            if (matchedConjugationIds.has(uniqueId)) return;
+
+            // Clear previous selection
+            document.querySelectorAll('#conjugations .item').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            selectedConjugationId = uniqueId;
+            document.getElementById(`conjugation-${uniqueId}`).classList.add('selected');
+
+            checkMatch();
+        }
+
+        // Check if selections match
+        function checkMatch() {
+            if (selectedPronoun === null || selectedConjugationId === null) return;
+
+            const pronounEl = document.getElementById(`pronoun-${selectedPronoun}`);
+            const conjugationEl = document.getElementById(`conjugation-${selectedConjugationId}`);
+
+            // Get the expected conjugation for the selected pronoun
+            const expectedConjugation = currentVerb.conjugations[selectedPronoun];
+
+            // Get the actual conjugation text that was clicked
+            const selectedConjugationText = conjugationEl.textContent.trim();
+
+            // Check if they match by comparing the text
+            if (expectedConjugation === selectedConjugationText) {
+                // Correct match!
+                pronounEl.classList.remove('selected');
+                pronounEl.classList.add('correct');
+                conjugationEl.classList.remove('selected');
+                conjugationEl.classList.add('correct');
+
+                matchedPronouns.add(selectedPronoun);
+                matchedConjugationIds.add(selectedConjugationId);
+                score++;
+                totalAttempts++;
+
+                setTimeout(() => {
+                    pronounEl.classList.remove('correct');
+                    conjugationEl.classList.remove('correct');
+                    renderPronouns();
+                    renderConjugations();
+
+                    if (matchedPronouns.size === pronouns.length) {
+                        showMessage('Perfect! All matched! 🎉', 'success');
+                    }
+                }, 500);
+
+            } else {
+                // Incorrect match
+                pronounEl.classList.add('incorrect');
+                conjugationEl.classList.add('incorrect');
+                totalAttempts++;
+
+                showMessage('Try again!', 'error');
+
+                setTimeout(() => {
+                    pronounEl.classList.remove('selected', 'incorrect');
+                    conjugationEl.classList.remove('selected', 'incorrect');
+                }, 500);
+            }
+
+            selectedPronoun = null;
+            selectedConjugationId = null;
+            updateScore();
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+
+            setTimeout(() => {
+                messageEl.textContent = '';
+                messageEl.className = 'message';
+            }, 2000);
+        }
+
+        // Update score display
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalAttempts;
+        }
+
+        // Reset game
+        function resetGame() {
+            score = 0;
+            totalAttempts = 0;
+            updateScore();
+            nextVerb();
+        }
+
+        // Initialize game
+        loadVerbs();
+    </script>
+</body>
+</html>
