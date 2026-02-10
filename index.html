@@ -13,12 +13,27 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #FF0000 0%, #FFFFFF 50%, #FF0000 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow: auto;
+        }
+
+        body::before {
+            content: '🏔️ ⛰️ 🏔️ ⛰️ 🏔️';
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            font-size: 3em;
+            text-align: center;
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
@@ -28,13 +43,16 @@
             max-width: 900px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
             text-align: center;
-            color: #667eea;
+            color: #FF0000;
             margin-bottom: 10px;
             font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .subtitle {
@@ -47,9 +65,10 @@
         .verb-title {
             text-align: center;
             font-size: 2em;
-            color: #764ba2;
+            color: #FF0000;
             margin-bottom: 30px;
             font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .game-container {
@@ -66,7 +85,7 @@
 
         .column h2 {
             text-align: center;
-            color: #667eea;
+            color: #FF0000;
             margin-bottom: 20px;
             font-size: 1.3em;
         }
@@ -89,8 +108,8 @@
         }
 
         .item.selected {
-            border-color: #667eea;
-            background: #e7eaff;
+            border-color: #FF0000;
+            background: #ffe6e6;
             font-weight: bold;
         }
 
@@ -131,7 +150,7 @@
         }
 
         button {
-            background: #667eea;
+            background: #FF0000;
             color: white;
             border: none;
             padding: 15px 30px;
@@ -143,9 +162,9 @@
         }
 
         button:hover {
-            background: #764ba2;
+            background: #CC0000;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
         }
 
         button:active {
@@ -155,7 +174,7 @@
         .score {
             text-align: center;
             font-size: 1.3em;
-            color: #667eea;
+            color: #FF0000;
             margin-bottom: 20px;
             font-weight: bold;
         }
@@ -181,6 +200,92 @@
             color: #666;
             font-size: 1.2em;
         }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #FF0000;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FF0000;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            background: white;
+            color: #FF0000;
+            border: 2px solid #FF0000;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background: #FF0000;
+            color: white;
+        }
+
+        .mode-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .confetti {
+            position: fixed;
+            font-size: 2em;
+            animation: fall 3s linear;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FF0000;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .timer.warning {
+            color: #dc3545;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
     </style>
 </head>
 <body>
@@ -191,7 +296,29 @@
         <div id="loading" class="loading">Loading verbs...</div>
 
         <div id="game" style="display: none;">
-            <div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+            <div class="mode-selector">
+                <button class="mode-btn active" onclick="setMode('practice')">Practice 🎯</button>
+                <button class="mode-btn" onclick="setMode('timed')">Timed ⏱️</button>
+                <button class="mode-btn" onclick="setMode('streak')">Streak 🔥</button>
+            </div>
+
+            <div id="timerDisplay" class="timer" style="display: none;"></div>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value"><span id="score">0</span>/<span id="total">0</span></div>
+                </div>
+                <div class="stat-box" id="streakBox">
+                    <div class="stat-label">Streak 🔥</div>
+                    <div class="stat-value" id="streak">0</div>
+                </div>
+                <div class="stat-box" id="bestStreakBox">
+                    <div class="stat-label">Best Streak ⭐</div>
+                    <div class="stat-value" id="bestStreak">0</div>
+                </div>
+            </div>
+
             <div class="verb-title" id="verbTitle"></div>
 
             <div class="game-container">
@@ -226,9 +353,41 @@
         let score = 0;
         let totalAttempts = 0;
         let conjugationIdCounter = 0;
+        let currentStreak = 0;
+        let bestStreak = 0;
+        let gameMode = 'practice';
+        let timer = null;
+        let timeLeft = 60;
+        let selectedPronounIndices = [];
 
         // Swiss German pronouns
         const pronouns = ['ich', 'du', 'er/si/es', 'mir', 'ihr', 'Si'];
+
+        // Funny feedback messages
+        const correctMessages = [
+            "Bravo! 🎉", "Super! 🌟", "Génial! 🎊", "Exactement! ✨",
+            "Parfait! 🎯", "Wunderbar! 🏔️", "Richtig! 💪",
+            "Toll gemacht! 🎨", "Fantastisch! 🚀", "Hopp Schwiiz! 🇨🇭"
+        ];
+
+        const incorrectMessages = [
+            "Oops! Versuech's nomol 😅", "Nöd ganz... probier nomol! 💭",
+            "Fast! Encore un essai! 🎯", "Pas tout à fait... allez! 🤔",
+            "Hmm... nope! 🤷", "Nää, das isch nöd richtig! 😬",
+            "Presque! Try again! 💡", "Schade! Next time! 🎲"
+        ];
+
+        const streakMessages = [
+            "🔥 En feu!", "⚡ Incroyable!", "💥 Unstoppable!",
+            "🌟 T'es chaud!", "🎯 In the zone!", "🚀 Sur la lancée!"
+        ];
+
+        const completionMessages = [
+            "Hopp Schwiiz! All matched! 🇨🇭🎉",
+            "Perfekt! Du bisch super! 🏔️✨",
+            "Bravo! C'est parfait! 🎊",
+            "Wunderbar! Tu es champion! 🏆"
+        ];
 
         // Load verbs from JSON file
         async function loadVerbs() {
@@ -266,6 +425,11 @@
             selectedConjugationId = null;
             conjugationIdCounter = 0;
 
+            // Randomly select 3-4 pronouns
+            const numPronouns = Math.floor(Math.random() * 2) + 3; // 3 or 4
+            const allIndices = [0, 1, 2, 3, 4, 5];
+            selectedPronounIndices = shuffle(allIndices).slice(0, numPronouns).sort((a, b) => a - b);
+
             document.getElementById('verbTitle').textContent = currentVerb.infinitive;
             document.getElementById('message').textContent = '';
             document.getElementById('message').className = 'message';
@@ -277,11 +441,11 @@
         // Render pronouns column
         function renderPronouns() {
             const container = document.getElementById('pronouns');
-            container.innerHTML = pronouns.map((pronoun, index) => `
+            container.innerHTML = selectedPronounIndices.map(index => `
                 <div class="item ${matchedPronouns.has(index) ? 'matched' : ''}"
                      onclick="selectPronoun(${index})"
                      id="pronoun-${index}">
-                    ${pronoun}
+                    ${pronouns[index]}
                 </div>
             `).join('');
         }
@@ -289,10 +453,12 @@
         // Render conjugations column (shuffled)
         function renderConjugations() {
             const container = document.getElementById('conjugations');
-            const shuffled = shuffle(currentVerb.conjugations.map((conj, index) => {
+            // Only show conjugations for selected pronouns
+            const filteredConjugations = selectedPronounIndices.map(index => {
                 const uniqueId = conjugationIdCounter++;
-                return {conj, index, uniqueId};
-            }));
+                return {conj: currentVerb.conjugations[index], index, uniqueId};
+            });
+            const shuffled = shuffle(filteredConjugations);
 
             container.innerHTML = shuffled.map(({conj, index, uniqueId}) => `
                 <div class="item ${matchedConjugationIds.has(uniqueId) ? 'matched' : ''}"
@@ -360,6 +526,14 @@
                 matchedConjugationIds.add(selectedConjugationId);
                 score++;
                 totalAttempts++;
+                currentStreak++;
+
+                if (currentStreak > bestStreak) {
+                    bestStreak = currentStreak;
+                }
+                updateStreak();
+
+                showMessage(getRandomMessage(correctMessages), 'success');
 
                 setTimeout(() => {
                     pronounEl.classList.remove('correct');
@@ -367,8 +541,17 @@
                     renderPronouns();
                     renderConjugations();
 
-                    if (matchedPronouns.size === pronouns.length) {
-                        showMessage('Perfect! All matched! 🎉', 'success');
+                    if (matchedPronouns.size === selectedPronounIndices.length) {
+                        showMessage(getRandomMessage(completionMessages), 'success');
+
+                        if (gameMode === 'timed') {
+                            timeLeft += 10; // Bonus time
+                        }
+
+                        // Auto-advance to next verb after completion
+                        setTimeout(() => {
+                            nextVerb();
+                        }, 1000);
                     }
                 }, 500);
 
@@ -377,8 +560,10 @@
                 pronounEl.classList.add('incorrect');
                 conjugationEl.classList.add('incorrect');
                 totalAttempts++;
+                currentStreak = 0;
+                updateStreak();
 
-                showMessage('Try again!', 'error');
+                showMessage(getRandomMessage(incorrectMessages), 'error');
 
                 setTimeout(() => {
                     pronounEl.classList.remove('selected', 'incorrect');
@@ -413,8 +598,104 @@
         function resetGame() {
             score = 0;
             totalAttempts = 0;
+            currentStreak = 0;
+            bestStreak = 0;
             updateScore();
+            updateStreak();
+
+            if (gameMode === 'timed') {
+                timeLeft = 60;
+                if (timer) clearInterval(timer);
+                startTimer();
+            }
+
             nextVerb();
+        }
+
+        // Set game mode
+        function setMode(mode) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (mode === 'timed') {
+                timeLeft = 60;
+                document.getElementById('timerDisplay').style.display = 'block';
+                startTimer();
+            } else {
+                document.getElementById('timerDisplay').style.display = 'none';
+                if (timer) clearInterval(timer);
+            }
+
+            if (mode === 'streak') {
+                currentStreak = 0;
+                updateStreak();
+            }
+
+            nextVerb();
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (timer) clearInterval(timer);
+            updateTimerDisplay();
+
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showMessage('⏰ Time\'s up! Score: ' + score, 'error');
+                    setTimeout(() => {
+                        timeLeft = 60;
+                        score = 0;
+                        totalAttempts = 0;
+                        updateScore();
+                        startTimer();
+                        nextVerb();
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timerDisplay');
+            display.textContent = '⏱️ ' + timeLeft + 's';
+            display.className = timeLeft <= 10 ? 'timer warning' : 'timer';
+        }
+
+        // Streak functions
+        function updateStreak() {
+            document.getElementById('streak').textContent = currentStreak;
+            document.getElementById('bestStreak').textContent = bestStreak;
+
+            if (currentStreak > 0 && currentStreak % 5 === 0) {
+                const msg = streakMessages[Math.floor(Math.random() * streakMessages.length)];
+                showMessage(msg + ' ' + currentStreak + ' streak!', 'success');
+            }
+        }
+
+        // Confetti animation
+        function createConfetti() {
+            const emojis = ['🎉', '🎊', '⭐', '✨', '🏔️', '🇨🇭', '💫', '🌟'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        // Random message selector
+        function getRandomMessage(array) {
+            return array[Math.floor(Math.random() * array.length)];
         }
 
         // Initialize game
