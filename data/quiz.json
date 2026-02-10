@@ -1,0 +1,152 @@
+[
+  {
+    "question": "How do you say 'thank you' in Swiss German?",
+    "options": ["Mersi", "Danke", "Grazie", "Gracias"],
+    "correct": 0,
+    "explanation": "Swiss German uses 'Mersi' (from French 'merci')"
+  },
+  {
+    "question": "What is 'Bruder' (brother) in Swiss German?",
+    "options": ["Brüeder", "Bruader", "Broder", "Bruder"],
+    "correct": 0,
+    "explanation": "'Bruder' becomes 'Brüeder' in Swiss German"
+  },
+  {
+    "question": "How do you say 'yes, gladly' in Swiss German?",
+    "options": ["Ja, gern", "Ja, gerne", "Oui, volontiers", "Si"],
+    "correct": 1,
+    "explanation": "'Ja, gerne' is the Swiss German way to say 'yes, gladly'"
+  },
+  {
+    "question": "What does 'Näi merssi' mean?",
+    "options": ["Yes please", "No, thank you", "Maybe", "I don't know"],
+    "correct": 1,
+    "explanation": "'Näi merssi' means 'No, thank you' in Swiss German"
+  },
+  {
+    "question": "How do you say 'excuse me' in Swiss German?",
+    "options": ["Entschuldigung!", "Sorry!", "Excusez-moi!", "Perdón!"],
+    "correct": 0,
+    "explanation": "'Entschuldigung!' is used for 'excuse me' in Swiss German"
+  },
+  {
+    "question": "What is 'Gsundheit' in English?",
+    "options": ["Good health", "Bless you", "Good morning", "Goodbye"],
+    "correct": 1,
+    "explanation": "'Gsundheit' is said after someone sneezes, like 'Bless you'"
+  },
+  {
+    "question": "How do you ask 'Do you understand Swiss German?' in standard German?",
+    "options": ["Verstehst du Schweizerdeutsch?", "Verstehst du Hochdeutsch?", "Sprichst du Schweizerdeutsch?", "Kannst du Hochdeutsch?"],
+    "correct": 2,
+    "explanation": "'Verstehst du Schweizerdeutsch?' means 'Do you understand Swiss German?'"
+  },
+  {
+    "question": "What does 'Ich verstaa kei Hochdütsch' mean?",
+    "options": ["I speak High German", "I don't understand High German", "I understand Swiss German", "I don't speak"],
+    "correct": 1,
+    "explanation": "'Ich verstaa kei Hochdütsch' = 'I don't understand High German'"
+  },
+  {
+    "question": "The Swiss German 'ä' sound is pronounced like:",
+    "options": ["ai in 'said'", "a in 'cat'", "e in 'bed'", "ay in 'day'"],
+    "correct": 0,
+    "explanation": "Swiss German 'ä' is pronounced like the 'ai' in 'said' or French 'è'"
+  },
+  {
+    "question": "What is the Swiss German word for 'kitchen'?",
+    "options": ["Küche", "Küchenkästchen", "Koche", "Köche"],
+    "correct": 1,
+    "explanation": "'Küchenkästchen' is Swiss German for 'kitchen'"
+  },
+  {
+    "question": "How do you say 'where is...?' in Swiss German?",
+    "options": ["Wo ist...?", "Woo isch...?", "Où est...?", "Donde está...?"],
+    "correct": 1,
+    "explanation": "'Woo isch...?' is Swiss German for 'where is...?'"
+  },
+  {
+    "question": "What does 'Chönnted Sii mir hälffe, bitte?' mean?",
+    "options": ["Can you help me, please?", "Could you help me, please?", "Do you want to help?", "Help me now!"],
+    "correct": 1,
+    "explanation": "'Chönnted Sii mir hälffe, bitte?' = 'Could you help me, please?' (formal)"
+  },
+  {
+    "question": "Which number is 'drüü'?",
+    "options": ["2", "3", "13", "30"],
+    "correct": 1,
+    "explanation": "'drüü' is the Swiss German word for 3"
+  },
+  {
+    "question": "What is 'sibe'?",
+    "options": ["6", "7", "17", "70"],
+    "correct": 1,
+    "explanation": "'sibe' is the Swiss German word for 7"
+  },
+  {
+    "question": "In Swiss German, 'ch' at the beginning is pronounced like:",
+    "options": ["k as in 'cat'", "sh as in 'shoe'", "Hard guttural like Scottish 'loch'", "Silent"],
+    "correct": 2,
+    "explanation": "Swiss German 'ch' is a hard guttural sound, like the 'ch' in Scottish 'loch'"
+  },
+  {
+    "question": "What is the article for 'Dialog' in Swiss German?",
+    "options": ["der", "die", "das", "de"],
+    "correct": 0,
+    "explanation": "'der Dialog' uses the masculine article 'der'"
+  },
+  {
+    "question": "How do you say 'to work' in Swiss German?",
+    "options": ["arbeiten", "schaffe", "werken", "jobben"],
+    "correct": 1,
+    "explanation": "'schaffe' is the Swiss German verb for 'to work'"
+  },
+  {
+    "question": "What does 'ghöre' mean?",
+    "options": ["to see", "to hear", "to say", "to know"],
+    "correct": 1,
+    "explanation": "'ghöre' means 'to hear' in Swiss German"
+  },
+  {
+    "question": "What is 'lache' in English?",
+    "options": ["to cry", "to laugh", "to run", "to eat"],
+    "correct": 1,
+    "explanation": "'lache' means 'to laugh' in Swiss German"
+  },
+  {
+    "question": "How do you say 'to come' in Swiss German?",
+    "options": ["kommen", "cho", "gaa", "chume"],
+    "correct": 1,
+    "explanation": "'cho' is the Swiss German infinitive for 'to come'"
+  },
+  {
+    "question": "What does 'gaa' mean?",
+    "options": ["to come", "to go", "to stay", "to run"],
+    "correct": 1,
+    "explanation": "'gaa' means 'to go' in Swiss German"
+  },
+  {
+    "question": "In Swiss German, 'ässe' means:",
+    "options": ["to drink", "to eat", "to sleep", "to speak"],
+    "correct": 1,
+    "explanation": "'ässe' means 'to eat' in Swiss German"
+  },
+  {
+    "question": "What is the Swiss German word for 'to say/tell'?",
+    "options": ["reden", "sprechen", "säge", "erzählen"],
+    "correct": 2,
+    "explanation": "'säge' means 'to say/tell' in Swiss German"
+  },
+  {
+    "question": "How many is 'ainezwanzg'?",
+    "options": ["11", "21", "31", "41"],
+    "correct": 1,
+    "explanation": "'ainezwanzg' = 21 in Swiss German"
+  },
+  {
+    "question": "What number is 'füfzää'?",
+    "options": ["5", "15", "50", "55"],
+    "correct": 1,
+    "explanation": "'füfzää' = 15 in Swiss German"
+  }
+]

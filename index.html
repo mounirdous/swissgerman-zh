@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swiss German Verb Conjugation Practice</title>
+    <title>Swiss German Practice - Verbs & Numbers</title>
     <style>
         * {
             margin: 0;
@@ -290,10 +290,27 @@
 </head>
 <body>
     <div class="container">
-        <h1>🇨🇭 Swiss German Verbs</h1>
-        <div class="subtitle">Match the pronouns with their conjugations</div>
+        <div id="gameSelection" style="display: block;">
+            <h1>🇨🇭 Swiss German Practice</h1>
+            <div class="subtitle">Choose a game to practice</div>
 
-        <div id="loading" class="loading">Loading verbs...</div>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                <button onclick="selectGameType('verbs')" style="font-size: 1.2em; padding: 20px 40px;">
+                    📝 Verbs<br><span style="font-size: 0.8em; opacity: 0.8;">Match conjugations</span>
+                </button>
+                <button onclick="selectGameType('numbers')" style="font-size: 1.2em; padding: 20px 40px;">
+                    🔢 Numbers<br><span style="font-size: 0.8em; opacity: 0.8;">0-1000</span>
+                </button>
+                <button onclick="selectGameType('quiz')" style="font-size: 1.2em; padding: 20px 40px;">
+                    🎓 Quiz<br><span style="font-size: 0.8em; opacity: 0.8;">Test your knowledge</span>
+                </button>
+            </div>
+        </div>
+
+        <h1 id="gameTitle" style="display: none;">🇨🇭 Swiss German</h1>
+        <div id="gameSubtitle" class="subtitle" style="display: none;"></div>
+
+        <div id="loading" class="loading" style="display: none;">Loading...</div>
 
         <div id="game" style="display: none;">
             <div class="mode-selector">
@@ -319,30 +336,34 @@
                 </div>
             </div>
 
-            <div class="verb-title" id="verbTitle"></div>
+            <div class="verb-title" id="questionTitle"></div>
 
             <div class="game-container">
                 <div class="column">
-                    <h2>Pronouns</h2>
-                    <div id="pronouns"></div>
+                    <h2 id="leftColumnTitle">Left</h2>
+                    <div id="leftColumn"></div>
                 </div>
 
                 <div class="column">
-                    <h2>Conjugations</h2>
-                    <div id="conjugations"></div>
+                    <h2 id="rightColumnTitle">Right</h2>
+                    <div id="rightColumn"></div>
                 </div>
             </div>
 
             <div class="message" id="message"></div>
 
             <div class="controls">
-                <button onclick="nextVerb()">Next Verb</button>
+                <button onclick="nextQuestion()">Next</button>
                 <button onclick="resetGame()">Reset Score</button>
+                <button onclick="backToMenu()">Back to Menu</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Game type
+        let gameType = null; // 'verbs' or 'numbers'
+
         // Verb data structure
         let verbs = [];
         let currentVerb = null;
@@ -360,8 +381,93 @@
         let timeLeft = 60;
         let selectedPronounIndices = [];
 
+        // Numbers game
+        let currentNumber = null;
+        let currentNumberOptions = [];
+        let selectedRightId = null;
+        let matchedRightIds = new Set();
+        let numberGameMode = 'number-to-text'; // alternates between 'number-to-text' and 'text-to-number'
+
+        // Quiz game
+        let quizQuestions = [];
+        let currentQuizQuestion = null;
+        let quizAnswered = false;
+
         // Swiss German pronouns
         const pronouns = ['ich', 'du', 'er/si/es', 'mir', 'ihr', 'Si'];
+
+        // Swiss German number words (based on course material PDF)
+        function numberToSwissGerman(num) {
+            // Standalone forms (0-9)
+            const ones = ['null', 'eis', 'zwäi', 'drüü', 'vier', 'foif', 'sächs', 'sibe', 'acht', 'nüün'];
+            // Compound forms (for 21-29, 31-39, etc.)
+            const onesCompound = ['', 'aine', 'zwäie', 'drüüe', 'viere', 'fuufe', 'sächse', 'sibene', 'achte', 'nüüne'];
+            // Teens (10-19)
+            const teens = ['zää', 'elf', 'zwölf', 'drüüzää', 'vierzää', 'füfzää', 'sächzää', 'sibzää', 'achtzää', 'nüünzää'];
+            // Tens (20, 30, 40, etc.)
+            const tens = ['', '', 'zwanzg', 'drisg', 'vierzg', 'füfzg', 'sächzg', 'sibzg', 'achtzg', 'nüünzg'];
+            // Hundreds
+            const hundredsPrefix = ['', 'hundert', 'zwäihundert', 'drüühundert', 'vierzchundert', 'foifhundert', 'sächshundert', 'sibehundert', 'achthundert', 'nüünhundert'];
+
+            if (num === 0) return 'null';
+            if (num === 1000) return 'tuusig';
+
+            let result = '';
+
+            // Hundreds
+            if (num >= 100) {
+                const hundreds = Math.floor(num / 100);
+                result += hundredsPrefix[hundreds];
+                num %= 100;
+            }
+
+            // Tens and ones
+            if (num >= 20) {
+                const onesDigit = num % 10;
+                const tensDigit = Math.floor(num / 10);
+                if (onesDigit > 0) {
+                    result += onesCompound[onesDigit] + tens[tensDigit];
+                } else {
+                    result += tens[tensDigit];
+                }
+            } else if (num >= 10) {
+                result += teens[num - 10];
+            } else if (num > 0) {
+                result += ones[num];
+            }
+
+            return result;
+        }
+
+        // Generate wrong answers for numbers
+        function generateWrongAnswers(correctNum, correctText) {
+            const wrong = [];
+
+            // Add nearby numbers
+            const nearby = [correctNum - 1, correctNum + 1, correctNum - 10, correctNum + 10, correctNum + 100, correctNum - 100];
+            for (let n of nearby) {
+                if (n >= 0 && n <= 1000 && n !== correctNum) {
+                    const wrongText = numberToSwissGerman(n);
+                    if (!wrong.includes(wrongText)) {
+                        wrong.push(wrongText);
+                    }
+                }
+                if (wrong.length >= 3) break;
+            }
+
+            // If we need more, add some random numbers
+            while (wrong.length < 3) {
+                const random = Math.floor(Math.random() * 1001);
+                if (random !== correctNum) {
+                    const wrongText = numberToSwissGerman(random);
+                    if (!wrong.includes(wrongText)) {
+                        wrong.push(wrongText);
+                    }
+                }
+            }
+
+            return wrong.slice(0, 3);
+        }
 
         // Funny feedback messages
         const correctMessages = [
@@ -389,6 +495,59 @@
             "Wunderbar! Tu es champion! 🏆"
         ];
 
+        // Game selection
+        function selectGameType(type) {
+            gameType = type;
+            document.getElementById('gameSelection').style.display = 'none';
+            document.getElementById('gameTitle').style.display = 'block';
+            document.getElementById('gameSubtitle').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
+
+            if (type === 'verbs') {
+                document.getElementById('gameSubtitle').textContent = 'Match the pronouns with their conjugations';
+                document.getElementById('leftColumnTitle').textContent = 'Pronouns';
+                document.getElementById('rightColumnTitle').textContent = 'Conjugations';
+                loadVerbs();
+            } else if (type === 'numbers') {
+                document.getElementById('gameSubtitle').textContent = 'Match numbers with their Swiss German text';
+                document.getElementById('leftColumnTitle').textContent = 'Number';
+                document.getElementById('rightColumnTitle').textContent = 'Swiss German';
+                loadNumbers();
+            } else if (type === 'quiz') {
+                document.getElementById('gameSubtitle').textContent = 'Test your Swiss German knowledge';
+                document.getElementById('leftColumnTitle').textContent = '';
+                document.getElementById('rightColumnTitle').textContent = '';
+                loadQuiz();
+            }
+        }
+
+        // Generic next question
+        function nextQuestion() {
+            if (gameType === 'verbs') {
+                nextVerb();
+            } else if (gameType === 'numbers') {
+                nextNumber();
+            } else if (gameType === 'quiz') {
+                nextQuiz();
+            }
+        }
+
+        // Back to menu
+        function backToMenu() {
+            document.getElementById('game').style.display = 'none';
+            document.getElementById('gameTitle').style.display = 'none';
+            document.getElementById('gameSubtitle').style.display = 'none';
+            document.getElementById('gameSelection').style.display = 'block';
+
+            // Reset scores
+            score = 0;
+            totalAttempts = 0;
+            currentStreak = 0;
+            bestStreak = 0;
+            updateScore();
+            updateStreak();
+        }
+
         // Load verbs from JSON file
         async function loadVerbs() {
             try {
@@ -401,6 +560,28 @@
                 document.getElementById('loading').innerHTML =
                     'Error loading verbs. Please make sure data/verbs.json exists.';
                 console.error('Error loading verbs:', error);
+            }
+        }
+
+        // Load numbers game (no file needed, generated on the fly)
+        function loadNumbers() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            nextNumber();
+        }
+
+        // Load quiz from JSON file
+        async function loadQuiz() {
+            try {
+                const response = await fetch('data/quiz.json');
+                quizQuestions = await response.json();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game').style.display = 'block';
+                nextQuiz();
+            } catch (error) {
+                document.getElementById('loading').innerHTML =
+                    'Error loading quiz. Please make sure data/quiz.json exists.';
+                console.error('Error loading quiz:', error);
             }
         }
 
@@ -430,7 +611,7 @@
             const allIndices = [0, 1, 2, 3, 4, 5];
             selectedPronounIndices = shuffle(allIndices).slice(0, numPronouns).sort((a, b) => a - b);
 
-            document.getElementById('verbTitle').textContent = currentVerb.infinitive;
+            document.getElementById('questionTitle').textContent = currentVerb.infinitive;
             document.getElementById('message').textContent = '';
             document.getElementById('message').className = 'message';
 
@@ -438,9 +619,111 @@
             renderConjugations();
         }
 
+        // Select next random number
+        function nextNumber() {
+            // Alternate between number-to-text and text-to-number
+            numberGameMode = (numberGameMode === 'number-to-text') ? 'text-to-number' : 'number-to-text';
+
+            // Generate random number between 0-1000
+            currentNumber = Math.floor(Math.random() * 1001);
+            const correctText = numberToSwissGerman(currentNumber);
+
+            if (numberGameMode === 'number-to-text') {
+                // Mode: Show number, choose text
+                const wrongTexts = generateWrongAnswers(currentNumber, correctText);
+                currentNumberOptions = shuffle([
+                    { text: correctText, correct: true, id: 0 },
+                    ...wrongTexts.map((text, i) => ({ text, correct: false, id: i + 1 }))
+                ]);
+                document.getElementById('leftColumnTitle').textContent = 'Number';
+                document.getElementById('rightColumnTitle').textContent = 'Swiss German';
+            } else {
+                // Mode: Show text, choose number
+                const wrongNumbers = generateWrongNumbers(currentNumber);
+                currentNumberOptions = shuffle([
+                    { text: currentNumber.toString(), correct: true, id: 0 },
+                    ...wrongNumbers.map((num, i) => ({ text: num.toString(), correct: false, id: i + 1 }))
+                ]);
+                document.getElementById('leftColumnTitle').textContent = 'Swiss German';
+                document.getElementById('rightColumnTitle').textContent = 'Number';
+            }
+
+            matchedRightIds.clear();
+            selectedRightId = null;
+
+            document.getElementById('questionTitle').textContent = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').className = 'message';
+
+            renderNumberGame();
+        }
+
+        // Select next quiz question
+        function nextQuiz() {
+            if (quizQuestions.length === 0) return;
+
+            // Pick a random question
+            currentQuizQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            quizAnswered = false;
+
+            document.getElementById('questionTitle').textContent = currentQuizQuestion.question;
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').className = 'message';
+
+            renderQuiz();
+        }
+
+        // Generate wrong number options
+        function generateWrongNumbers(correctNum) {
+            const wrong = [];
+            const variations = [
+                correctNum + 1, correctNum - 1,
+                correctNum + 10, correctNum - 10,
+                correctNum + 100, correctNum - 100,
+                Math.floor(correctNum / 10) * 10 + ((correctNum % 10 + 5) % 10), // swap last digit
+                correctNum * 2, Math.floor(correctNum / 2)
+            ];
+
+            for (let n of variations) {
+                if (n >= 0 && n <= 1000 && n !== correctNum && !wrong.includes(n)) {
+                    wrong.push(n);
+                }
+                if (wrong.length >= 3) break;
+            }
+
+            // Make sure we have exactly 3 wrong answers
+            while (wrong.length < 3) {
+                const random = Math.floor(Math.random() * 1001);
+                if (random !== correctNum && !wrong.includes(random)) {
+                    wrong.push(random);
+                }
+            }
+
+            return wrong.slice(0, 3);
+        }
+
         // Render pronouns column
         function renderPronouns() {
-            const container = document.getElementById('pronouns');
+            const container = document.getElementById('leftColumn');
+            const gameContainer = document.querySelector('.game-container');
+
+            container.style.display = 'block'; // Ensure visible
+            container.style.width = '';
+            container.style.maxWidth = '300px';
+
+            // Restore flex layout for columns
+            gameContainer.style.display = 'flex';
+            gameContainer.style.maxWidth = '';
+            gameContainer.style.margin = '';
+
+            // Show column titles
+            document.getElementById('leftColumnTitle').style.display = 'block';
+            document.getElementById('rightColumnTitle').style.display = 'block';
+
+            // Hide quiz container if it exists
+            const quizContainer = document.getElementById('quiz-container');
+            if (quizContainer) quizContainer.style.display = 'none';
+
             container.innerHTML = selectedPronounIndices.map(index => `
                 <div class="item ${matchedPronouns.has(index) ? 'matched' : ''}"
                      onclick="selectPronoun(${index})"
@@ -452,7 +735,12 @@
 
         // Render conjugations column (shuffled)
         function renderConjugations() {
-            const container = document.getElementById('conjugations');
+            const container = document.getElementById('rightColumn');
+            container.style.display = 'block'; // Ensure visible
+            container.style.width = '';
+            container.style.maxWidth = '300px';
+            container.style.margin = '';
+
             // Only show conjugations for selected pronouns
             const filteredConjugations = selectedPronounIndices.map(index => {
                 const uniqueId = conjugationIdCounter++;
@@ -469,6 +757,141 @@
                     ${conj}
                 </div>
             `).join('');
+        }
+
+        // Render numbers game
+        function renderNumberGame() {
+            const leftContainer = document.getElementById('leftColumn');
+            const rightContainer = document.getElementById('rightColumn');
+            const gameContainer = document.querySelector('.game-container');
+
+            // Reset column display
+            leftContainer.style.display = 'block';
+            rightContainer.style.display = 'block';
+            rightContainer.style.width = '';
+            rightContainer.style.maxWidth = '300px';
+            rightContainer.style.margin = '';
+
+            // Restore flex layout for columns
+            gameContainer.style.display = 'flex';
+            gameContainer.style.maxWidth = '';
+            gameContainer.style.margin = '';
+
+            // Show column titles
+            document.getElementById('leftColumnTitle').style.display = 'block';
+            document.getElementById('rightColumnTitle').style.display = 'block';
+
+            // Hide quiz container if it exists
+            const quizContainer = document.getElementById('quiz-container');
+            if (quizContainer) quizContainer.style.display = 'none';
+
+            let leftContent;
+            if (numberGameMode === 'number-to-text') {
+                leftContent = currentNumber;
+            } else {
+                leftContent = numberToSwissGerman(currentNumber);
+            }
+
+            // Left side: single item, centered, not clickable
+            leftContainer.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                    <div class="item" style="font-size: 1.5em; font-weight: bold; cursor: default; padding: 30px 40px;" id="number-left">
+                        ${leftContent}
+                    </div>
+                </div>
+            `;
+
+            // Right side: 4 options
+            rightContainer.innerHTML = currentNumberOptions.map(option => `
+                <div class="item ${matchedRightIds.has(option.id) ? 'matched' : ''}"
+                     onclick="selectNumberRight(${option.id}, ${option.correct})"
+                     id="number-right-${option.id}">
+                    ${option.text}
+                </div>
+            `).join('');
+        }
+
+        // Render quiz game
+        function renderQuiz() {
+            const leftContainer = document.getElementById('leftColumn');
+            const rightContainer = document.getElementById('rightColumn');
+            const gameContainer = document.querySelector('.game-container');
+
+            // Hide both columns
+            leftContainer.innerHTML = '';
+            leftContainer.style.display = 'none';
+            rightContainer.innerHTML = '';
+            rightContainer.style.display = 'none';
+
+            // Hide column titles
+            document.getElementById('leftColumnTitle').style.display = 'none';
+            document.getElementById('rightColumnTitle').style.display = 'none';
+
+            // Adjust game-container to not use flex columns
+            gameContainer.style.display = 'block';
+            gameContainer.style.maxWidth = '800px';
+            gameContainer.style.margin = '0 auto';
+
+            // Create quiz container if it doesn't exist
+            let quizContainer = document.getElementById('quiz-container');
+            if (!quizContainer) {
+                quizContainer = document.createElement('div');
+                quizContainer.id = 'quiz-container';
+                gameContainer.appendChild(quizContainer);
+            }
+            quizContainer.style.display = 'block';
+            quizContainer.style.width = '100%';
+
+            quizContainer.innerHTML = currentQuizQuestion.options.map((option, index) => `
+                <div class="item ${quizAnswered ? (index === currentQuizQuestion.correct ? 'correct' : '') : ''}"
+                     onclick="selectQuizAnswer(${index})"
+                     id="quiz-option-${index}"
+                     style="cursor: ${quizAnswered ? 'default' : 'pointer'}; margin-bottom: 15px; padding: 20px;">
+                    ${option}
+                </div>
+            `).join('');
+
+            // Show explanation if answered
+            if (quizAnswered) {
+                quizContainer.innerHTML += `
+                    <div style="margin-top: 30px; padding: 20px; background: #f0f8ff; border-radius: 10px; border: 2px solid #4a90e2;">
+                        <strong style="color: #2c5282;">💡 Explanation:</strong><br>
+                        ${currentQuizQuestion.explanation}
+                    </div>
+                `;
+            }
+        }
+
+        // Handle quiz answer selection
+        function selectQuizAnswer(selectedIndex) {
+            if (quizAnswered) return; // Already answered
+
+            quizAnswered = true;
+            totalAttempts++;
+
+            if (selectedIndex === currentQuizQuestion.correct) {
+                // Correct!
+                score++;
+                currentStreak++;
+                if (currentStreak > bestStreak) {
+                    bestStreak = currentStreak;
+                }
+                updateStreak();
+                showMessage(getRandomMessage(correctMessages), 'success');
+            } else {
+                // Incorrect
+                currentStreak = 0;
+                updateStreak();
+                showMessage(getRandomMessage(incorrectMessages), 'error');
+            }
+
+            updateScore();
+            renderQuiz(); // Re-render to show explanation
+
+            // Auto-advance after showing explanation
+            setTimeout(() => {
+                nextQuiz();
+            }, 3000);
         }
 
         // Handle pronoun selection
@@ -491,7 +914,7 @@
             if (matchedConjugationIds.has(uniqueId)) return;
 
             // Clear previous selection
-            document.querySelectorAll('#conjugations .item').forEach(el => {
+            document.querySelectorAll('#rightColumn .item').forEach(el => {
                 el.classList.remove('selected');
             });
 
@@ -499,6 +922,51 @@
             document.getElementById(`conjugation-${uniqueId}`).classList.add('selected');
 
             checkMatch();
+        }
+
+        // Handle number right selection (directly check answer)
+        function selectNumberRight(id, isCorrect) {
+            if (matchedRightIds.has(id)) return;
+
+            const rightEl = document.getElementById(`number-right-${id}`);
+            const leftEl = document.getElementById('number-left');
+
+            if (isCorrect) {
+                // Correct!
+                rightEl.classList.add('correct');
+                leftEl.classList.add('correct');
+
+                matchedRightIds.add(id);
+                score++;
+                totalAttempts++;
+                currentStreak++;
+
+                if (currentStreak > bestStreak) {
+                    bestStreak = currentStreak;
+                }
+                updateStreak();
+
+                showMessage(getRandomMessage(correctMessages), 'success');
+
+                setTimeout(() => {
+                    nextNumber();
+                }, 1000);
+
+            } else {
+                // Incorrect
+                rightEl.classList.add('incorrect');
+                totalAttempts++;
+                currentStreak = 0;
+                updateStreak();
+
+                showMessage(getRandomMessage(incorrectMessages), 'error');
+
+                setTimeout(() => {
+                    rightEl.classList.remove('incorrect');
+                }, 500);
+            }
+
+            updateScore();
         }
 
         // Check if selections match
@@ -609,7 +1077,7 @@
                 startTimer();
             }
 
-            nextVerb();
+            nextQuestion();
         }
 
         // Set game mode
@@ -632,7 +1100,7 @@
                 updateStreak();
             }
 
-            nextVerb();
+            nextQuestion();
         }
 
         // Timer functions
@@ -653,7 +1121,7 @@
                         totalAttempts = 0;
                         updateScore();
                         startTimer();
-                        nextVerb();
+                        nextQuestion();
                     }, 2000);
                 }
             }, 1000);
@@ -698,8 +1166,7 @@
             return array[Math.floor(Math.random() * array.length)];
         }
 
-        // Initialize game
-        loadVerbs();
+        // Initialize - show game selection screen (no auto-load)
     </script>
 </body>
 </html>
