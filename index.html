@@ -321,6 +321,34 @@
             max-width: 100%;
             box-sizing: border-box;
         }
+
+        .speaker-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: transform 0.2s ease;
+            vertical-align: middle;
+            margin-left: 15px;
+        }
+
+        .speaker-btn:hover {
+            transform: scale(1.2);
+            background: none;
+            box-shadow: none;
+        }
+
+        .speaker-btn:active {
+            transform: scale(1.1);
+        }
+
+        .verb-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
@@ -328,9 +356,13 @@
         <div id="gameSelection" style="display: block;">
             <h1>🇨🇭 Swiss German Practice</h1>
             <div class="subtitle">Choose a game to practice</div>
-            <div style="text-align: center; color: #999; font-size: 0.9em; margin-top: 5px;">v1.2</div>
+            <div style="text-align: center; color: #999; font-size: 0.9em; margin-top: 5px;">v1.3</div>
 
-            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+            <div style="text-align: center; color: #666; font-size: 0.85em; margin-top: 10px; font-style: italic;">
+                🔊 Audio pronunciation available (Standard German)
+            </div>
+
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
                 <button onclick="selectGameType('verbs')" style="font-size: 1.2em; padding: 20px 40px;">
                     📝 Verbs<br><span style="font-size: 0.8em; opacity: 0.8;">Match conjugations</span>
                 </button>
@@ -372,7 +404,10 @@
                 </div>
             </div>
 
-            <div class="verb-title" id="questionTitle"></div>
+            <div class="verb-title-container">
+                <div class="verb-title" id="questionTitle"></div>
+                <button class="speaker-btn" id="speakerBtn" onclick="speakText()" style="display: none;" title="Listen to pronunciation (Standard German)">🔊</button>
+            </div>
 
             <div class="game-container">
                 <div class="column">
@@ -435,6 +470,55 @@
 
         // Swiss German pronouns
         const pronouns = ['ich', 'du', 'er/si/es', 'mir', 'ihr', 'Si'];
+
+        // Text-to-Speech variables
+        let currentTextToSpeak = '';
+        let speechSynthesis = window.speechSynthesis;
+        let germanVoice = null;
+
+        // Initialize TTS on page load
+        function initializeTTS() {
+            if ('speechSynthesis' in window) {
+                // Wait for voices to load
+                speechSynthesis.onvoiceschanged = () => {
+                    const voices = speechSynthesis.getVoices();
+                    // Try to find a German voice (preferably de-DE, de-CH, or de-AT)
+                    germanVoice = voices.find(voice => voice.lang.startsWith('de-')) || voices[0];
+                };
+            }
+        }
+
+        // Speak text using TTS
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert('Sorry, your browser does not support text-to-speech.');
+                return;
+            }
+
+            // If text is provided, use it; otherwise use currentTextToSpeak
+            const textToSpeak = text || currentTextToSpeak;
+            if (!textToSpeak) return;
+
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+
+            // Extract just the verb (remove parenthetical translations)
+            const cleanText = textToSpeak.split('(')[0].trim();
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'de-DE'; // German
+            utterance.rate = 0.85; // Slightly slower for learning
+            utterance.pitch = 1.0;
+
+            if (germanVoice) {
+                utterance.voice = germanVoice;
+            }
+
+            speechSynthesis.speak(utterance);
+        }
+
+        // Initialize TTS when page loads
+        initializeTTS();
 
         // Swiss German number words (based on course material PDF)
         function numberToSwissGerman(num) {
@@ -682,6 +766,13 @@
             document.getElementById('message').textContent = '';
             document.getElementById('message').className = 'message';
 
+            // Show speaker button and set text for pronunciation
+            const speakerBtn = document.getElementById('speakerBtn');
+            if (speakerBtn && 'speechSynthesis' in window) {
+                speakerBtn.style.display = 'inline-block';
+                currentTextToSpeak = currentVerb.infinitive;
+            }
+
             renderPronouns();
             renderConjugations();
         }
@@ -722,6 +813,12 @@
             document.getElementById('message').textContent = '';
             document.getElementById('message').className = 'message';
 
+            // Hide main speaker button (numbers game has its own inline)
+            const speakerBtn = document.getElementById('speakerBtn');
+            if (speakerBtn) {
+                speakerBtn.style.display = 'none';
+            }
+
             renderNumberGame();
         }
 
@@ -743,6 +840,12 @@
             document.getElementById('questionTitle').textContent = currentQuizQuestion.question;
             document.getElementById('message').textContent = '';
             document.getElementById('message').className = 'message';
+
+            // Hide speaker button for quiz (questions are too long)
+            const speakerBtn = document.getElementById('speakerBtn');
+            if (speakerBtn) {
+                speakerBtn.style.display = 'none';
+            }
 
             renderQuiz();
         }
@@ -877,12 +980,18 @@
             numbersContainer.style.display = 'block';
             numbersContainer.style.width = '100%';
 
+            // Set text for pronunciation
+            currentTextToSpeak = questionContent.toString();
+
             // Display question on top, options below vertically
             numbersContainer.innerHTML = `
-                <div class="number-question" id="number-question">
-                    ${questionContent}
+                <div class="verb-title-container">
+                    <div class="number-question" id="number-question" style="margin-bottom: 0;">
+                        ${questionContent}
+                    </div>
+                    <button class="speaker-btn" onclick="speakText()" title="Listen to pronunciation (Standard German)">🔊</button>
                 </div>
-                <div class="options-grid">
+                <div class="options-grid" style="margin-top: 30px;">
                     ${currentNumberOptions.map(option => `
                         <div class="item ${matchedRightIds.has(option.id) ? 'matched' : ''}"
                              onclick="selectNumberRight(${option.id}, ${option.correct})"
