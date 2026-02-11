@@ -328,7 +328,7 @@
         <div id="gameSelection" style="display: block;">
             <h1>🇨🇭 Swiss German Practice</h1>
             <div class="subtitle">Choose a game to practice</div>
-            <div style="text-align: center; color: #999; font-size: 0.9em; margin-top: 5px;">v1.1</div>
+            <div style="text-align: center; color: #999; font-size: 0.9em; margin-top: 5px;">v1.2</div>
 
             <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
                 <button onclick="selectGameType('verbs')" style="font-size: 1.2em; padding: 20px 40px;">
@@ -402,6 +402,8 @@
 
         // Verb data structure
         let verbs = [];
+        let verbDeck = []; // Shuffled deck of verbs
+        let verbDeckIndex = 0; // Current position in deck
         let currentVerb = null;
         let selectedPronoun = null;
         let selectedConjugationId = null;
@@ -426,6 +428,8 @@
 
         // Quiz game
         let quizQuestions = [];
+        let quizDeck = []; // Shuffled deck of quiz questions
+        let quizDeckIndex = 0; // Current position in deck
         let currentQuizQuestion = null;
         let quizAnswered = false;
 
@@ -582,6 +586,16 @@
             bestStreak = 0;
             updateScore();
             updateStreak();
+
+            // Reset decks
+            verbDeckIndex = 0;
+            quizDeckIndex = 0;
+        }
+
+        // Initialize verb deck (shuffle all verbs)
+        function initializeVerbDeck() {
+            verbDeck = shuffle([...verbs]);
+            verbDeckIndex = 0;
         }
 
         // Load verbs from JSON file
@@ -589,6 +603,7 @@
             try {
                 const response = await fetch('data/verbs.json');
                 verbs = await response.json();
+                initializeVerbDeck(); // Initialize the deck
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('game').style.display = 'block';
                 nextVerb();
@@ -606,11 +621,18 @@
             nextNumber();
         }
 
+        // Initialize quiz deck (shuffle all questions)
+        function initializeQuizDeck() {
+            quizDeck = shuffle([...quizQuestions]);
+            quizDeckIndex = 0;
+        }
+
         // Load quiz from JSON file
         async function loadQuiz() {
             try {
                 const response = await fetch('data/quiz.json');
                 quizQuestions = await response.json();
+                initializeQuizDeck(); // Initialize the deck
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('game').style.display = 'block';
                 nextQuiz();
@@ -631,11 +653,20 @@
             return newArray;
         }
 
-        // Select next random verb
+        // Select next verb from deck (no immediate repeats)
         function nextVerb() {
             if (verbs.length === 0) return;
 
-            currentVerb = verbs[Math.floor(Math.random() * verbs.length)];
+            // If we've gone through all verbs, reshuffle the deck
+            if (verbDeckIndex >= verbDeck.length) {
+                initializeVerbDeck();
+                console.log('🔄 Reshuffled verb deck - all verbs seen!');
+            }
+
+            // Take the next verb from the deck
+            currentVerb = verbDeck[verbDeckIndex];
+            verbDeckIndex++;
+
             matchedPronouns.clear();
             matchedConjugationIds.clear();
             selectedPronoun = null;
@@ -694,12 +725,19 @@
             renderNumberGame();
         }
 
-        // Select next quiz question
+        // Select next quiz question from deck (no immediate repeats)
         function nextQuiz() {
             if (quizQuestions.length === 0) return;
 
-            // Pick a random question
-            currentQuizQuestion = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            // If we've gone through all questions, reshuffle the deck
+            if (quizDeckIndex >= quizDeck.length) {
+                initializeQuizDeck();
+                console.log('🔄 Reshuffled quiz deck - all questions seen!');
+            }
+
+            // Take the next question from the deck
+            currentQuizQuestion = quizDeck[quizDeckIndex];
+            quizDeckIndex++;
             quizAnswered = false;
 
             document.getElementById('questionTitle').textContent = currentQuizQuestion.question;
@@ -1116,6 +1154,13 @@
             updateScore();
             updateStreak();
 
+            // Reshuffle decks for a fresh start
+            if (gameType === 'verbs' && verbs.length > 0) {
+                initializeVerbDeck();
+            } else if (gameType === 'quiz' && quizQuestions.length > 0) {
+                initializeQuizDeck();
+            }
+
             if (gameMode === 'timed') {
                 timeLeft = 60;
                 if (timer) clearInterval(timer);
@@ -1130,6 +1175,13 @@
             gameMode = mode;
             document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+
+            // Reshuffle decks when changing modes for variety
+            if (gameType === 'verbs' && verbs.length > 0) {
+                initializeVerbDeck();
+            } else if (gameType === 'quiz' && quizQuestions.length > 0) {
+                initializeQuizDeck();
+            }
 
             if (mode === 'timed') {
                 timeLeft = 60;
