@@ -83,6 +83,11 @@
             max-width: 300px;
         }
 
+        .column.full-width {
+            max-width: 100%;
+            width: 100%;
+        }
+
         .column h2 {
             text-align: center;
             color: #FF0000;
@@ -286,6 +291,36 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+
+        .number-question {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #FF0000;
+            padding: 40px;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 3px solid #FF0000;
+            width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .options-grid .item {
+            margin-bottom: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -293,6 +328,7 @@
         <div id="gameSelection" style="display: block;">
             <h1>🇨🇭 Swiss German Practice</h1>
             <div class="subtitle">Choose a game to practice</div>
+            <div style="text-align: center; color: #999; font-size: 0.9em; margin-top: 5px;">v1.1</div>
 
             <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
                 <button onclick="selectGameType('verbs')" style="font-size: 1.2em; padding: 20px 40px;">
@@ -710,6 +746,8 @@
             container.style.display = 'block'; // Ensure visible
             container.style.width = '';
             container.style.maxWidth = '300px';
+            container.style.flex = '';
+            container.classList.remove('full-width');
 
             // Restore flex layout for columns
             gameContainer.style.display = 'flex';
@@ -720,9 +758,11 @@
             document.getElementById('leftColumnTitle').style.display = 'block';
             document.getElementById('rightColumnTitle').style.display = 'block';
 
-            // Hide quiz container if it exists
+            // Hide quiz and numbers containers if they exist
             const quizContainer = document.getElementById('quiz-container');
             if (quizContainer) quizContainer.style.display = 'none';
+            const numbersContainer = document.getElementById('numbers-container');
+            if (numbersContainer) numbersContainer.style.display = 'none';
 
             container.innerHTML = selectedPronounIndices.map(index => `
                 <div class="item ${matchedPronouns.has(index) ? 'matched' : ''}"
@@ -765,50 +805,55 @@
             const rightContainer = document.getElementById('rightColumn');
             const gameContainer = document.querySelector('.game-container');
 
-            // Reset column display
-            leftContainer.style.display = 'block';
-            rightContainer.style.display = 'block';
-            rightContainer.style.width = '';
-            rightContainer.style.maxWidth = '300px';
-            rightContainer.style.margin = '';
+            // Hide column titles for numbers game
+            document.getElementById('leftColumnTitle').style.display = 'none';
+            document.getElementById('rightColumnTitle').style.display = 'none';
 
-            // Restore flex layout for columns
-            gameContainer.style.display = 'flex';
-            gameContainer.style.maxWidth = '';
-            gameContainer.style.margin = '';
-
-            // Show column titles
-            document.getElementById('leftColumnTitle').style.display = 'block';
-            document.getElementById('rightColumnTitle').style.display = 'block';
+            // Hide both column containers completely
+            leftContainer.style.display = 'none';
+            rightContainer.style.display = 'none';
 
             // Hide quiz container if it exists
             const quizContainer = document.getElementById('quiz-container');
             if (quizContainer) quizContainer.style.display = 'none';
 
-            let leftContent;
+            // Adjust game-container to block layout taking full width
+            gameContainer.style.display = 'block';
+            gameContainer.style.maxWidth = '100%';
+            gameContainer.style.margin = '0 auto';
+
+            let questionContent;
             if (numberGameMode === 'number-to-text') {
-                leftContent = currentNumber;
+                questionContent = currentNumber;
             } else {
-                leftContent = numberToSwissGerman(currentNumber);
+                questionContent = numberToSwissGerman(currentNumber);
             }
 
-            // Left side: single item, centered, not clickable
-            leftContainer.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; min-height: 200px;">
-                    <div class="item" style="font-size: 1.5em; font-weight: bold; cursor: default; padding: 30px 40px;" id="number-left">
-                        ${leftContent}
-                    </div>
+            // Create or get numbers container
+            let numbersContainer = document.getElementById('numbers-container');
+            if (!numbersContainer) {
+                numbersContainer = document.createElement('div');
+                numbersContainer.id = 'numbers-container';
+                gameContainer.appendChild(numbersContainer);
+            }
+            numbersContainer.style.display = 'block';
+            numbersContainer.style.width = '100%';
+
+            // Display question on top, options below vertically
+            numbersContainer.innerHTML = `
+                <div class="number-question" id="number-question">
+                    ${questionContent}
+                </div>
+                <div class="options-grid">
+                    ${currentNumberOptions.map(option => `
+                        <div class="item ${matchedRightIds.has(option.id) ? 'matched' : ''}"
+                             onclick="selectNumberRight(${option.id}, ${option.correct})"
+                             id="number-right-${option.id}">
+                            ${option.text}
+                        </div>
+                    `).join('')}
                 </div>
             `;
-
-            // Right side: 4 options
-            rightContainer.innerHTML = currentNumberOptions.map(option => `
-                <div class="item ${matchedRightIds.has(option.id) ? 'matched' : ''}"
-                     onclick="selectNumberRight(${option.id}, ${option.correct})"
-                     id="number-right-${option.id}">
-                    ${option.text}
-                </div>
-            `).join('');
         }
 
         // Render quiz game
@@ -929,12 +974,12 @@
             if (matchedRightIds.has(id)) return;
 
             const rightEl = document.getElementById(`number-right-${id}`);
-            const leftEl = document.getElementById('number-left');
+            const questionEl = document.getElementById('number-question');
 
             if (isCorrect) {
                 // Correct!
                 rightEl.classList.add('correct');
-                leftEl.classList.add('correct');
+                questionEl.classList.add('correct');
 
                 matchedRightIds.add(id);
                 score++;
