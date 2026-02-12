@@ -1,6 +1,7 @@
-# Exclude Word documents
+# Exclude Word documents and PDFs
 *.docx
 *.doc
+data/*.pdf
 
 # macOS
 .DS_Store
