@@ -1,152 +1,308 @@
 [
   {
-    "question": "How do you say 'thank you' in Swiss German?",
-    "options": ["Mersi", "Danke", "Grazie", "Gracias"],
-    "correct": 0,
-    "explanation": "Swiss German uses 'Mersi' (from French 'merci')"
-  },
-  {
-    "question": "What is 'Bruder' (brother) in Swiss German?",
-    "options": ["Brüeder", "Bruader", "Broder", "Bruder"],
-    "correct": 0,
-    "explanation": "'Bruder' becomes 'Brüeder' in Swiss German"
-  },
-  {
-    "question": "How do you say 'yes, gladly' in Swiss German?",
-    "options": ["Ja, gern", "Ja, gerne", "Oui, volontiers", "Si"],
+    "question": "How do you say 'Good morning' in Swiss German?",
+    "options": ["Guten Morgen", "Guete Morge", "Guten Tag", "Grüezi"],
     "correct": 1,
-    "explanation": "'Ja, gerne' is the Swiss German way to say 'yes, gladly'"
+    "explanation": "'Guete Morge' is the Swiss German greeting for 'Good morning', used until around 11:00 AM."
+  },
+  {
+    "question": "What is the correct Swiss German greeting for 'Good day'?",
+    "options": ["Guten Tag", "Guete Daag", "Guete Morge", "Guete Abig"],
+    "correct": 1,
+    "explanation": "'Guete Daag' is the Swiss German equivalent of 'Good day', typically used during daytime hours."
+  },
+  {
+    "question": "How do you say 'Good evening' in Swiss German?",
+    "options": ["Guten Abend", "Guete Abig", "Guete Nacht", "Grüezi"],
+    "correct": 1,
+    "explanation": "'Guete Abig' is the Swiss German greeting for 'Good evening', used in the evening hours."
+  },
+  {
+    "question": "What is 'Gute Nacht' in Swiss German?",
+    "options": ["Guete Nacht", "Guete Abig", "Uf Widerluege", "Tschau"],
+    "correct": 0,
+    "explanation": "'Guete Nacht' is 'Good night' in Swiss German, used when going to bed or saying goodbye late at night."
+  },
+  {
+    "question": "What does 'Grüezi' mean?",
+    "options": ["Goodbye", "Hello (formal)", "Thank you", "Please"],
+    "correct": 1,
+    "explanation": "'Grüezi' is a formal Swiss German greeting meaning 'Hello', commonly used in German-speaking Switzerland."
+  },
+  {
+    "question": "How do you say 'thank you' in Swiss German?",
+    "options": ["Mersi", "Danke", "Grazie", "Dankeschön"],
+    "correct": 0,
+    "explanation": "'Mersi' (from French 'merci') is the most common way to say 'thank you' in Swiss German."
   },
   {
     "question": "What does 'Näi merssi' mean?",
-    "options": ["Yes please", "No, thank you", "Maybe", "I don't know"],
+    "options": ["Yes please", "No, thank you", "Maybe", "You're welcome"],
     "correct": 1,
-    "explanation": "'Näi merssi' means 'No, thank you' in Swiss German"
+    "explanation": "'Näi merssi' means 'No, thank you' in Swiss German, combining 'Näi' (no) with 'merssi' (thank you)."
+  },
+  {
+    "question": "How do you say 'yes, gladly' in Swiss German?",
+    "options": ["Ja, gern", "Ja geern", "Oui, volontiers", "Ja, bitte"],
+    "correct": 1,
+    "explanation": "'Ja geern' is the Swiss German way to say 'yes, gladly' or 'yes, with pleasure'."
+  },
+  {
+    "question": "What is 'Bitte' in Swiss German?",
+    "options": ["Thank you", "Please / You're welcome", "Excuse me", "Hello"],
+    "correct": 1,
+    "explanation": "'Bitte' means both 'please' and 'you're welcome' in Swiss German, used in the same contexts as Standard German."
   },
   {
     "question": "How do you say 'excuse me' in Swiss German?",
-    "options": ["Entschuldigung!", "Sorry!", "Excusez-moi!", "Perdón!"],
+    "options": ["Entschuldigung", "Tut mir leid", "Excusez-moi", "Verzeihen"],
     "correct": 0,
-    "explanation": "'Entschuldigung!' is used for 'excuse me' in Swiss German"
+    "explanation": "'Entschuldigung!' is used for 'excuse me' or 'sorry' in Swiss German, similar to Standard German."
   },
   {
-    "question": "What is 'Gsundheit' in English?",
-    "options": ["Good health", "Bless you", "Good morning", "Goodbye"],
-    "correct": 1,
-    "explanation": "'Gsundheit' is said after someone sneezes, like 'Bless you'"
-  },
-  {
-    "question": "How do you ask 'Do you understand Swiss German?' in standard German?",
-    "options": ["Verstehst du Schweizerdeutsch?", "Verstehst du Hochdeutsch?", "Sprichst du Schweizerdeutsch?", "Kannst du Hochdeutsch?"],
+    "question": "What is the formal 'you' in Swiss German?",
+    "options": ["du", "ihr", "Sie", "dir"],
     "correct": 2,
-    "explanation": "'Verstehst du Schweizerdeutsch?' means 'Do you understand Swiss German?'"
+    "explanation": "'Sie' is the formal form of 'you' in Swiss German, used with strangers, superiors, and in professional contexts."
   },
   {
-    "question": "What does 'Ich verstaa kei Hochdütsch' mean?",
-    "options": ["I speak High German", "I don't understand High German", "I understand Swiss German", "I don't speak"],
+    "question": "What is the informal singular 'you' in Swiss German?",
+    "options": ["Sie", "du", "ihr", "dich"],
     "correct": 1,
-    "explanation": "'Ich verstaa kei Hochdütsch' = 'I don't understand High German'"
+    "explanation": "'du' is the informal singular form of 'you', used with friends, family, and children."
+  },
+  {
+    "question": "What is the informal plural 'you' in Swiss German?",
+    "options": ["Sie", "du", "ihr", "euch"],
+    "correct": 2,
+    "explanation": "'ihr' is the informal plural form of 'you', used when addressing multiple people informally."
+  },
+  {
+    "question": "How do you ask 'Where are you from?' informally in Swiss German?",
+    "options": ["Woher kommst du?", "Woher chunnsch du?", "Wo bisch du?", "Was machst du?"],
+    "correct": 1,
+    "explanation": "'Woher chunnsch du?' is the informal way to ask 'Where are you from?' in Swiss German."
+  },
+  {
+    "question": "How do you say 'I come from Switzerland' in Swiss German?",
+    "options": ["Ich komme aus der Schweiz", "Ich chume us de Schwiiz", "Ich bin aus der Schweiz", "Ich chume vo Schwiiz"],
+    "correct": 1,
+    "explanation": "'Ich chume us de Schwiiz' means 'I come from Switzerland' in Swiss German, using 'chume' (come) and 'Schwiiz' (Switzerland)."
+  },
+  {
+    "question": "What does 'Wie gaats Ine?' mean?",
+    "options": ["Where are you going?", "How are you? (formal)", "What do you want?", "Who are you?"],
+    "correct": 1,
+    "explanation": "'Wie gaats Ine?' is the formal way to ask 'How are you?' in Swiss German, literally 'How goes it to you?'"
+  },
+  {
+    "question": "How do you say 'I'm doing well' in Swiss German?",
+    "options": ["Es geht mir gut", "Mir gaats guet", "Ich bin gut", "Guet"],
+    "correct": 1,
+    "explanation": "'Mir gaats guet' means 'I'm doing well' in Swiss German, a common response to 'Wie gaats Ine?' or 'Wie gaats dir?'"
+  },
+  {
+    "question": "What does 'Super' mean as a response to 'How are you?'",
+    "options": ["Terrible", "So-so", "Great/Super", "Not good"],
+    "correct": 2,
+    "explanation": "'Super' means 'great' or 'super' in Swiss German, indicating you're doing really well."
+  },
+  {
+    "question": "What does 'Nöd so guet' mean?",
+    "options": ["Very good", "So-so", "Not so good", "Excellent"],
+    "correct": 2,
+    "explanation": "'Nöd so guet' means 'not so good' in Swiss German, used when you're not feeling well or things aren't going well."
+  },
+  {
+    "question": "What does 'Solala' mean?",
+    "options": ["Great", "Terrible", "So-so / comme ci comme ça", "Perfect"],
+    "correct": 2,
+    "explanation": "'Solala' means 'so-so' or 'comme ci comme ça' in Swiss German, indicating things are neither good nor bad."
+  },
+  {
+    "question": "How do you say 'See you later' in Swiss German?",
+    "options": ["Bis spoter", "Auf Wiedersehen", "Tschüss", "Bis morgen"],
+    "correct": 0,
+    "explanation": "'Bis spoter' means 'See you later' in Swiss German, used when you expect to see someone again later that day."
+  },
+  {
+    "question": "What does 'Bis morn' mean?",
+    "options": ["See you later", "See you tomorrow", "See you soon", "Good morning"],
+    "correct": 1,
+    "explanation": "'Bis morn' means 'See you tomorrow' in Swiss German, short for 'bis morgen'."
+  },
+  {
+    "question": "What does 'Bis gli' mean?",
+    "options": ["See you tomorrow", "See you later", "See you soon", "Goodbye"],
+    "correct": 2,
+    "explanation": "'Bis gli' means 'See you soon' in Swiss German, used when you'll see someone again shortly."
+  },
+  {
+    "question": "How do you say 'Goodbye' formally in Swiss German (on the phone)?",
+    "options": ["Tschau", "Uf Widerluege", "Uf Widerhoore", "Bis spoter"],
+    "correct": 2,
+    "explanation": "'Uf Widerhoore' means 'Goodbye' (literally 'until hearing again') in Swiss German, specifically used on the phone."
   },
   {
     "question": "The Swiss German 'ä' sound is pronounced like:",
-    "options": ["ai in 'said'", "a in 'cat'", "e in 'bed'", "ay in 'day'"],
+    "options": ["'ai' in 'said'", "'a' in 'cat'", "'e' in 'bet'", "'ay' in 'day'"],
     "correct": 0,
-    "explanation": "Swiss German 'ä' is pronounced like the 'ai' in 'said' or French 'è'"
+    "explanation": "Swiss German 'ä' is pronounced like the 'ai' in 'said' or French 'è', as in 'ässe' (to eat)."
   },
   {
-    "question": "What is the Swiss German word for 'kitchen'?",
-    "options": ["Küche", "Küchenkästchen", "Koche", "Köche"],
-    "correct": 1,
-    "explanation": "'Küchenkästchen' is Swiss German for 'kitchen'"
-  },
-  {
-    "question": "How do you say 'where is...?' in Swiss German?",
-    "options": ["Wo ist...?", "Woo isch...?", "Où est...?", "Donde está...?"],
-    "correct": 1,
-    "explanation": "'Woo isch...?' is Swiss German for 'where is...?'"
-  },
-  {
-    "question": "What does 'Chönnted Sii mir hälffe, bitte?' mean?",
-    "options": ["Can you help me, please?", "Could you help me, please?", "Do you want to help?", "Help me now!"],
-    "correct": 1,
-    "explanation": "'Chönnted Sii mir hälffe, bitte?' = 'Could you help me, please?' (formal)"
-  },
-  {
-    "question": "Which number is 'drüü'?",
-    "options": ["2", "3", "13", "30"],
-    "correct": 1,
-    "explanation": "'drüü' is the Swiss German word for 3"
-  },
-  {
-    "question": "What is 'sibe'?",
-    "options": ["6", "7", "17", "70"],
-    "correct": 1,
-    "explanation": "'sibe' is the Swiss German word for 7"
-  },
-  {
-    "question": "In Swiss German, 'ch' at the beginning is pronounced like:",
-    "options": ["k as in 'cat'", "sh as in 'shoe'", "Hard guttural like Scottish 'loch'", "Silent"],
+    "question": "How is the Swiss German 'ch' pronounced at the beginning of words?",
+    "options": ["Like 'k' in 'cat'", "Like 'sh' in 'shoe'", "Hard guttural like Scottish 'loch'", "Silent"],
     "correct": 2,
-    "explanation": "Swiss German 'ch' is a hard guttural sound, like the 'ch' in Scottish 'loch'"
+    "explanation": "Swiss German 'ch' is pronounced as a hard guttural sound, like the 'ch' in Scottish 'loch' or German 'Bach'."
   },
   {
-    "question": "What is the article for 'Dialog' in Swiss German?",
-    "options": ["der", "die", "das", "de"],
-    "correct": 0,
-    "explanation": "'der Dialog' uses the masculine article 'der'"
-  },
-  {
-    "question": "How do you say 'to work' in Swiss German?",
-    "options": ["arbeiten", "schaffe", "werken", "jobben"],
+    "question": "How is the vowel sound in 'Brueder' (brother) pronounced?",
+    "options": ["Like 'oo' in 'boot'", "Like 'ue' in French (long ü)", "Like 'u' in 'put'", "Like 'ee' in 'meet'"],
     "correct": 1,
-    "explanation": "'schaffe' is the Swiss German verb for 'to work'"
+    "explanation": "In 'Brueder' (brother), the 'üe' is pronounced like French 'u' in 'tu' but longer, a characteristic Swiss German sound."
+  },
+  {
+    "question": "What is the Swiss German verb for 'to work'?",
+    "options": ["arbeiten", "schaffe", "werken", "machen"],
+    "correct": 1,
+    "explanation": "'schaffe' is the Swiss German verb for 'to work', different from Standard German 'arbeiten'."
   },
   {
     "question": "What does 'ghöre' mean?",
-    "options": ["to see", "to hear", "to say", "to know"],
+    "options": ["to see", "to hear", "to speak", "to listen"],
     "correct": 1,
-    "explanation": "'ghöre' means 'to hear' in Swiss German"
+    "explanation": "'ghöre' means 'to hear' in Swiss German, derived from Standard German 'hören'."
   },
   {
     "question": "What is 'lache' in English?",
-    "options": ["to cry", "to laugh", "to run", "to eat"],
+    "options": ["to cry", "to laugh", "to smile", "to talk"],
     "correct": 1,
-    "explanation": "'lache' means 'to laugh' in Swiss German"
+    "explanation": "'lache' means 'to laugh' in Swiss German, similar to Standard German 'lachen'."
   },
   {
-    "question": "How do you say 'to come' in Swiss German?",
-    "options": ["kommen", "cho", "gaa", "chume"],
+    "question": "What is the infinitive form of 'to come' in Swiss German?",
+    "options": ["kommen", "cho", "chume", "gaa"],
     "correct": 1,
-    "explanation": "'cho' is the Swiss German infinitive for 'to come'"
+    "explanation": "'cho' is the Swiss German infinitive for 'to come', quite different from Standard German 'kommen'."
   },
   {
     "question": "What does 'gaa' mean?",
     "options": ["to come", "to go", "to stay", "to run"],
     "correct": 1,
-    "explanation": "'gaa' means 'to go' in Swiss German"
+    "explanation": "'gaa' means 'to go' in Swiss German, derived from Standard German 'gehen'."
   },
   {
     "question": "In Swiss German, 'ässe' means:",
     "options": ["to drink", "to eat", "to sleep", "to speak"],
     "correct": 1,
-    "explanation": "'ässe' means 'to eat' in Swiss German"
+    "explanation": "'ässe' means 'to eat' in Swiss German, from Standard German 'essen'."
   },
   {
     "question": "What is the Swiss German word for 'to say/tell'?",
     "options": ["reden", "sprechen", "säge", "erzählen"],
     "correct": 2,
-    "explanation": "'säge' means 'to say/tell' in Swiss German"
+    "explanation": "'säge' means 'to say/tell' in Swiss German, from Standard German 'sagen'."
   },
   {
-    "question": "How many is 'ainezwanzg'?",
-    "options": ["11", "21", "31", "41"],
+    "question": "How do you conjugate 'sii' (to be) for 'I am' in Swiss German?",
+    "options": ["ich bin", "ich sii", "ich bisch", "ich sind"],
+    "correct": 0,
+    "explanation": "'ich bin' is 'I am' in Swiss German, the same as Standard German."
+  },
+  {
+    "question": "How do you say 'you are' (informal) with 'sii' in Swiss German?",
+    "options": ["du bist", "du bisch", "du bin", "du sind"],
     "correct": 1,
-    "explanation": "'ainezwanzg' = 21 in Swiss German"
+    "explanation": "'du bisch' is 'you are' (informal) in Swiss German, conjugated from 'sii' (to be)."
+  },
+  {
+    "question": "What is 'he/she/it is' in Swiss German using 'sii'?",
+    "options": ["er/sie/es ist", "er/sie/es isch", "er/sie/es sind", "er/sie/es bisch"],
+    "correct": 1,
+    "explanation": "'er/sie/es isch' means 'he/she/it is' in Swiss German."
+  },
+  {
+    "question": "What number is 'drüü' in Swiss German?",
+    "options": ["2", "3", "13", "30"],
+    "correct": 1,
+    "explanation": "'drüü' is the Swiss German word for the number 3."
+  },
+  {
+    "question": "What is 'sibe' in Swiss German?",
+    "options": ["6", "7", "17", "70"],
+    "correct": 1,
+    "explanation": "'sibe' is the Swiss German word for the number 7."
+  },
+  {
+    "question": "How do you say '21' in Swiss German?",
+    "options": ["einundzwanzig", "ainezwanzg", "zwanzg-ains", "zwanzg und ains"],
+    "correct": 1,
+    "explanation": "'ainezwanzg' is 21 in Swiss German, following the pattern of 'one-and-twenty'."
   },
   {
     "question": "What number is 'füfzää'?",
     "options": ["5", "15", "50", "55"],
     "correct": 1,
-    "explanation": "'füfzää' = 15 in Swiss German"
+    "explanation": "'füfzää' is 15 in Swiss German, combining 'füf' (five) with 'zää' (ten)."
+  },
+  {
+    "question": "What is 'zwölfi' in Swiss German?",
+    "options": ["2", "12", "20", "22"],
+    "correct": 1,
+    "explanation": "'zwölfi' is 12 in Swiss German, with the diminutive '-i' ending common in Swiss German."
+  },
+  {
+    "question": "What does 'Ich chume us Äritrea' mean?",
+    "options": ["I work in Eritrea", "I live in Eritrea", "I come from Eritrea", "I go to Eritrea"],
+    "correct": 2,
+    "explanation": "'Ich chume us Äritrea' means 'I come from Eritrea', using 'chume' (come) and 'us' (from)."
+  },
+  {
+    "question": "How do you say Switzerland in Swiss German?",
+    "options": ["Schweiz", "Schwiiz", "Suisse", "Svizzera"],
+    "correct": 1,
+    "explanation": "'Schwiiz' is Switzerland in Swiss German, with the characteristic long 'ii' sound."
+  },
+  {
+    "question": "What does 'Züritüütsch' refer to?",
+    "options": ["Zurich people", "The Zurich dialect", "Zurich food", "Swiss cheese"],
+    "correct": 1,
+    "explanation": "'Züritüütsch' refers to the Zurich dialect of Swiss German, spoken in and around Zurich."
+  },
+  {
+    "question": "What is 'Berntüütsch'?",
+    "options": ["People from Bern", "The Bern dialect", "Bern architecture", "A type of cheese"],
+    "correct": 1,
+    "explanation": "'Berntüütsch' is the Bernese dialect of Swiss German, spoken in the Bern region."
+  },
+  {
+    "question": "What does 'Baseltüütsch' mean?",
+    "options": ["Basel wine", "The Basel dialect", "Basel people", "Basel museum"],
+    "correct": 1,
+    "explanation": "'Baseltüütsch' is the Basel dialect of Swiss German, spoken in the Basel region."
+  },
+  {
+    "question": "In Basel, people say 'D Lüüt ___' (The people speak):",
+    "options": ["spräche", "rede", "säge", "ghöre"],
+    "correct": 1,
+    "explanation": "In Basel dialect, 'D Lüüt rede' means 'The people speak', using 'rede' as the verb."
+  },
+  {
+    "question": "What does 'Wie alt bisch?' mean?",
+    "options": ["How are you?", "Where are you?", "How old are you?", "What's your name?"],
+    "correct": 2,
+    "explanation": "'Wie alt bisch?' means 'How old are you?' in Swiss German (informal)."
+  },
+  {
+    "question": "How do you say 'I am 25 years old' in Swiss German?",
+    "options": ["Ich bin fünfundzwanzig", "Ich bi füfezwanzg jaar alt", "Ich habe 25 Jahre", "Ich sind 25"],
+    "correct": 1,
+    "explanation": "'Ich bi füfezwanzg jaar alt' means 'I am 25 years old', using 'bi' (am), 'füfezwanzg' (25), and 'jaar' (years)."
+  },
+  {
+    "question": "What is 'Gsundheit' used for?",
+    "options": ["Saying hello", "After someone sneezes (Bless you)", "Wishing good health", "Saying goodbye"],
+    "correct": 1,
+    "explanation": "'Gsundheit' is said after someone sneezes, like 'Bless you' in English, literally meaning 'health'."
   }
 ]
